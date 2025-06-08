@@ -51,5 +51,15 @@ class User extends Authenticatable
         return $this->hasMany(League::class);
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isOrganizer(): bool
+    {
+        return $this->role === 'organizer';
+    }
+
 
 }

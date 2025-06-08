@@ -10,6 +10,10 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
             <div class="mb-3">
+                <label class="form-label">League logo URL:</label>
+                <input type="text" name="logo_url" class="form-control" placeholder="https://example.com/logo.jpg">
+            </div>
+            <div class="mb-3">
                 <label class="form-label">Description:</label>
                 <textarea name="description" class="form-control"></textarea>
             </div>

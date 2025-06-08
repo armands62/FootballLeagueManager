@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Team extends Model
 {
-    protected $fillable = ['name', 'city'];
+    protected $fillable = ['name', 'city', 'logo_url'];
 
     public function leagues(): BelongsToMany {
         return $this->belongsToMany(League::class, 'league_team');

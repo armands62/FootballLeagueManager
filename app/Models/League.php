@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class League extends Model
 {
-    protected $fillable = ['name', 'description', 'user_id'];
+    protected $fillable = ['name', 'description', 'user_id', 'logo_url'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);

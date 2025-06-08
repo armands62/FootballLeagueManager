@@ -33,6 +33,24 @@
             color: #f5f5f5;
             border: 1px solid #4b5563;
         }
+
+        .page-link {
+            background-color: #2a2a3c;
+            color: #facc15;
+            border: 1px solid #4b5563;
+        }
+
+        .page-link:hover {
+            background-color: #facc15;
+            color: #2a2a3c;
+        }
+
+        .page-item.active .page-link {
+            background-color: #d97706;
+            border-color: #d97706;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
