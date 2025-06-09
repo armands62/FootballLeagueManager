@@ -51,6 +51,36 @@
             color: white;
         }
 
+        .nav-tabs {
+            border-bottom: 1px solid #444;
+        }
+
+        .nav-tabs .nav-link {
+            background-color: #1e1e2f;
+            color: #ccc;
+            border: none;
+            border-radius: 0;
+            padding: 10px 16px;
+            margin-right: 4px;
+            font-weight: 500;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #facc15;
+            background-color: #2a2a3d;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #111;
+            color: #f8f9fa;
+            border-bottom: 3px solid #facc15;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -71,6 +101,13 @@
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
                     @endauth
+                    <form method="POST" action="{{ route('locale.switch') }}" class="ms-3 d-inline">
+                        @csrf
+                        <select name="locale" onchange="this.form.submit()" class="form-select form-select-sm bg-dark text-light" style="width: auto;">
+                            <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>🇬🇧 EN</option>
+                            <option value="lv" {{ app()->getLocale() == 'lv' ? 'selected' : '' }}>🇱🇻 LV</option>
+                        </select>
+                    </form>
                 </ul>
             </div>
         </div>

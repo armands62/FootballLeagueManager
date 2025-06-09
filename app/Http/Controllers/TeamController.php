@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\League;
+use App\Models\Matches;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller
@@ -66,5 +67,24 @@ class TeamController extends Controller
         $team->delete();
 
         return redirect()->route('leagues.show', $league)->with('success', 'Team removed.');
+    }
+
+    public function show(Team $team)
+    {
+        $team->load(['players' => function ($query) {
+            $query->orderBy('position')->orderBy('kit_number');
+        }]);
+
+        $playersByPosition = $team->players->groupBy('position');
+
+        $matches = Matches::where(function($query) use ($team) {
+            $query->where('home_team_id', $team->id)
+                ->orWhere('away_team_id', $team->id);
+        })
+        ->with(['homeTeam', 'awayTeam'])
+        ->orderBy('match_date')
+        ->paginate(10);
+
+        return view('teams.show', compact('team', 'matches', 'playersByPosition'));
     }
 }

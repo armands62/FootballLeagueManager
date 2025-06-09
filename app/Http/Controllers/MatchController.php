@@ -94,7 +94,7 @@ class MatchController extends Controller
             }
         }
 
-        shuffle($matches); // Randomize the match order
+        shuffle($matches); // Randomizes the match order
 
         $totalMatches = count($matches);
         $dateStart = \Carbon\Carbon::parse($request->start_date);
