@@ -101,13 +101,6 @@
                         <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
                     @endauth
-                    <form method="POST" action="{{ route('locale.switch') }}" class="ms-3 d-inline">
-                        @csrf
-                        <select name="locale" onchange="this.form.submit()" class="form-select form-select-sm bg-dark text-light" style="width: auto;">
-                            <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>🇬🇧 EN</option>
-                            <option value="lv" {{ app()->getLocale() == 'lv' ? 'selected' : '' }}>🇱🇻 LV</option>
-                        </select>
-                    </form>
                 </ul>
             </div>
         </div>

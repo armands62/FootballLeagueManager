@@ -8,11 +8,6 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchEventController;
 
-Route::post('/locale', function () {
-    session(['locale' => request('locale')]);
-    return back();
-})->name('locale.switch');
-
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 require __DIR__.'/auth.php';

@@ -6,18 +6,28 @@
     <p>{{ $league->description }}</p>
 
     @if($league->logo_url)
-        <img src="{{ $league->logo_url }}" alt="League Logo" width="100" class="mb-3">
+        @if($league->logo_url)
+            @php
+                $isLocal = $league->logo_url && !Str::startsWith($league->logo_url, ['http://', 'https://']);
+            @endphp
+
+            <img 
+                src="{{ $isLocal ? asset('storage/' . $league->logo_url) : $league->logo_url }}" 
+                alt="League Logo" 
+                width="100" 
+                class="mb-3">
+        @endif
     @endif
 
     <ul class="nav nav-tabs mb-3" id="leagueTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-standings" data-bs-toggle="tab" data-bs-target="#standings" type="button" role="tab">{{ __('tabs.standings_matches') }}</button>
+            <button class="nav-link active" id="tab-standings" data-bs-toggle="tab" data-bs-target="#standings" type="button" role="tab">Standings & Matches</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-scorers" data-bs-toggle="tab" data-bs-target="#scorers" type="button" role="tab">{{ __('tabs.top_scorers') }}</button>
+            <button class="nav-link" id="tab-scorers" data-bs-toggle="tab" data-bs-target="#scorers" type="button" role="tab">Top Scorers</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-teams" data-bs-toggle="tab" data-bs-target="#teams" type="button" role="tab">{{ __('tabs.teams') }}</button>
+            <button class="nav-link" id="tab-teams" data-bs-toggle="tab" data-bs-target="#teams" type="button" role="tab">Teams</button>
         </li>
     </ul>
 
@@ -32,10 +42,10 @@
         </div>
 
         <div class="tab-pane fade" id="teams" role="tabpanel">
-            <h2>{{ __('tabs.teams') }}</h2>
+            <h2>Teams</h2>
             @auth
                 @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
-                    <a href="{{ route('teams.create', $league) }}" class="btn btn-primary mb-3">{{ __('teams.add_team') }}</a>
+                    <a href="{{ route('teams.create', $league) }}" class="btn btn-primary mb-3">Add Team</a>
                 @endif
             @endauth
 

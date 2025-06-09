@@ -29,24 +29,19 @@ class LeagueController extends Controller
 
     public function store(Request $request)
     {
-
-        if (!auth()->user()->isOrganizer() && !auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized access.');
-        }
-
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|url|max:255',
+            'logo' => 'nullable|image|max:2048',
+            'logo_url' => 'nullable|url',
         ]);
 
-        League::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'logo_url' => $request->logo_url,
-            'user_id' => Auth::id()
-        ]);
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('logos', 'public');
+            $validated['logo_url'] = $path;
+        }
 
+        League::create($validated);
         return redirect()->route('leagues.index')->with('success', 'League created successfully.');
     }
 
@@ -134,18 +129,20 @@ class LeagueController extends Controller
 
     public function update(Request $request, League $league)
     {
-        if (!auth()->user()->isOrganizer() && !auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized access.');
-        }
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|url|max:255',
+            'logo' => 'nullable|image|max:2048',
+            'logo_url' => 'nullable|url',
         ]);
 
-        $league->update($request->only('name', 'description', 'logo_url'));
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('logos', 'public');
+            $validated['logo_url'] = $path;
+        }
 
-        return redirect()->route('leagues.index')->with('success', 'League updated.');
+        $league->update($validated);
+        return redirect()->route('leagues.show', $league)->with('success', 'League updated successfully.');
     }
 
     public function destroy(League $league)
