@@ -26,16 +26,32 @@
                                 class="me-3 rounded">
                         @endif
 
-                        <a href="{{ route('leagues.show', $league) }}" class="text-warning fw-bold fs-5 text-decoration-none">
-                            {{ $league->name }}
-                        </a>
+                        <div>
+                            <a href="{{ route('leagues.show', $league) }}" class="text-warning fw-bold fs-5 text-decoration-none">
+                                {{ $league->name }}
+                            </a>
+                            <div class="text-white-50 small">
+                                {{ $league->teams->count() }} team{{ $league->teams->count() !== 1 ? 's' : '' }} in {{ $league->country ?? 'Unknown Country' }}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="d-flex gap-2">
                         <a href="{{ route('leagues.show', $league) }}" class="btn btn-outline-warning btn-sm">View</a>
 
                         @auth
-                            @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
+                            <form method="POST" action="{{ route('favourites.league.toggle') }}">
+                                @csrf
+                                <input type="hidden" name="league_id" value="{{ $league->id }}">
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    {{ auth()->user()->favouriteLeagues->contains($league->id) ? 'Unfavourite' : 'Favourite' }}
+                                </button>
+                            </form>
+                            @php
+                                $canEdit = auth()->user()->isAdmin() || 
+                                        (auth()->user()->isOrganizer() && $league->user_id === auth()->id());
+                            @endphp
+                            @if($canEdit)
                                 <a href="{{ route('leagues.edit', $league) }}" class="btn btn-sm btn-warning">Edit</a>
 
                                 <form action="{{ route('leagues.destroy', $league) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this league?');">

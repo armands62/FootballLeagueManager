@@ -11,7 +11,21 @@
     <p><strong>City:</strong> {{ $team->city }}</p>
 
     @auth
-        @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
+        @php
+            $canManageTeam = false;
+
+            if (auth()->user()->isAdmin()) {
+                $canManageTeam = true;
+            } elseif (auth()->user()->isOrganizer()) {
+                foreach ($team->leagues as $league) {
+                    if ($league->user_id === auth()->id()) {
+                        $canManageTeam = true;
+                        break;
+                    }
+                }
+            }
+        @endphp
+        @if($canManageTeam)
             <a href="{{ route('players.create', $team) }}" class="btn btn-primary mb-4">Add Player</a>
         @endif
     @endauth
@@ -29,7 +43,7 @@
                                 ({{ $player->nationality ?? 'Unknown' }})
                             </div>
                             @auth
-                                @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
+                                @if($canManageTeam)
                                     <div class="d-flex gap-2">
                                         <a href="{{ route('players.edit', [$team, $player]) }}" class="btn btn-sm btn-warning">Edit</a>
                                         <form action="{{ route('players.destroy', [$team, $player]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this player?');">

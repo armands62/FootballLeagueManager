@@ -29,11 +29,16 @@ class LeagueController extends Controller
 
     public function store(Request $request)
     {
+        if (!auth()->user()->isOrganizer() && !auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized access.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'logo' => 'nullable|image|max:2048',
             'logo_url' => 'nullable|url',
+            'country' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -41,9 +46,13 @@ class LeagueController extends Controller
             $validated['logo_url'] = $path;
         }
 
+        $validated['user_id'] = auth()->id();
+
         League::create($validated);
+
         return redirect()->route('leagues.index')->with('success', 'League created successfully.');
     }
+
 
     public function show(League $league)
     {
@@ -55,7 +64,7 @@ class LeagueController extends Controller
         if ($filter === 'upcoming') {
             $query->where('match_date', '>=', now());
         }
-        $matches = Matches::where('league_id', $league->id)
+        $matches = $query
         ->with(['homeTeam', 'awayTeam', 'events.player', 'events.relatedPlayer'])
         ->orderBy('match_date')
         ->paginate(10);
@@ -133,7 +142,8 @@ class LeagueController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'logo' => 'nullable|image|max:2048',
-            'logo_url' => 'nullable|url',
+            'logo_url' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('logo')) {

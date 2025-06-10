@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Edit Team</h1>
 
-    <form action="{{ route('teams.update', [$league, $team]) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('teams.update', [$league, $team]) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -19,20 +19,9 @@
         </div>
 
         <div class="mb-3">
-            <label for="logo_url" class="form-label">Logo URL (optional)</label>
+            <label for="logo_url" class="form-label">Logo URL</label>
             <input type="url" name="logo_url" class="form-control" value="{{ $team->logo_url }}">
         </div>
-
-        <div class="mb-3">
-            <label for="logo" class="form-label">Upload Logo (optional)</label>
-            <input type="file" name="logo" class="form-control">
-        </div>
-
-        @if($team->logo_url)
-            <div class="mb-3">
-                <img src="{{ Str::startsWith($team->logo_url, 'logos/') ? Storage::url($team->logo_url) : $team->logo_url }}" alt="Current Logo" width="100">
-            </div>
-        @endif
 
         <button type="submit" class="btn btn-primary">Update Team</button>
     </form>

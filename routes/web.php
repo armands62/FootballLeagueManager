@@ -7,6 +7,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\MatchEventController;
+use App\Http\Controllers\FavouriteLeagueController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -25,6 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('matches/{match}/events/create', [MatchEventController::class, 'create'])->name('match-events.create');
     Route::post('matches/{match}/events', [MatchEventController::class, 'store'])->name('match-events.store');
     Route::delete('match-events/{event}', [MatchEventController::class, 'destroy'])->name('match-events.destroy');
+
+    Route::post('/favourites/league/toggle', [FavouriteLeagueController::class, 'toggle'])->name('favourites.league.toggle');
+    Route::get('/favourites/leagues', [FavouriteLeagueController::class, 'index'])->name('favourites.league.index');
 });
 
 Route::prefix('leagues/{league}')->middleware(['auth'])->group(function () {

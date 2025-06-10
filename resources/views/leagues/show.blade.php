@@ -6,17 +6,20 @@
     <p>{{ $league->description }}</p>
 
     @if($league->logo_url)
-        @if($league->logo_url)
-            @php
-                $isLocal = $league->logo_url && !Str::startsWith($league->logo_url, ['http://', 'https://']);
-            @endphp
+        @php
+            $isLocal = $league->logo_url && !Str::startsWith($league->logo_url, ['http://', 'https://']);
+        @endphp
+        <img 
+            src="{{ $isLocal ? asset('storage/' . $league->logo_url) : $league->logo_url }}" 
+            alt="League Logo" 
+            width="100" 
+            class="mb-3">
+    @endif
 
-            <img 
-                src="{{ $isLocal ? asset('storage/' . $league->logo_url) : $league->logo_url }}" 
-                alt="League Logo" 
-                width="100" 
-                class="mb-3">
-        @endif
+    @if($league->country)
+        <p class="text-white-50">
+            <strong>Country:</strong> {{ $league->country }}
+        </p>
     @endif
 
     <ul class="nav nav-tabs mb-3" id="leagueTabs" role="tablist">
@@ -44,21 +47,44 @@
         <div class="tab-pane fade" id="teams" role="tabpanel">
             <h2>Teams</h2>
             @auth
-                @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
+                @php
+                    $canManageTeams = auth()->user()->isAdmin() || 
+                                    (auth()->user()->isOrganizer() && $league->user_id === auth()->id());
+                @endphp
+                @if($canManageTeams)
                     <a href="{{ route('teams.create', $league) }}" class="btn btn-primary mb-3">Add Team</a>
                 @endif
             @endauth
 
             <ul class="list-group mb-4">
                 @foreach($league->teams as $team)
-                    <li class="list-group-item bg-dark text-light d-flex align-items-center">
-                        @if($team->logo_url)
-                            <img src="{{ $team->logo_url }}" alt="Team Logo" width="40" class="me-3">
-                        @endif
-                        <a href="{{ route('teams.show', $team) }}" class="text-warning fw-bold text-decoration-none">
-                            {{ $team->name }}
-                        </a>
-                        <span class="ms-2 text-white-50">({{ $team->city }})</span>
+                    <li class="list-group-item bg-dark text-light d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            @if($team->logo_url)
+                                <img src="{{ $team->logo_url }}" alt="Team Logo" width="40" class="me-3">
+                            @endif
+                            <a href="{{ route('teams.show', $team) }}" class="text-warning fw-bold text-decoration-none">
+                                {{ $team->name }}
+                            </a>
+                            <span class="ms-2 text-white-50">({{ $team->city }})</span>
+                        </div>
+
+                        @auth
+                            @php
+                                $canManageTeams = auth()->user()->isAdmin() || 
+                                                (auth()->user()->isOrganizer() && $league->user_id === auth()->id());
+                            @endphp
+                            @if($canManageTeams)
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('teams.edit', [$league, $team]) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    <form action="{{ route('teams.destroy', [$league, $team]) }}" method="POST" onsubmit="return confirm('Delete this team?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            @endif
+                        @endauth
                     </li>
                 @endforeach
             </ul>

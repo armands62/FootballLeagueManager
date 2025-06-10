@@ -61,5 +61,9 @@ class User extends Authenticatable
         return $this->role === 'organizer';
     }
 
+    public function favouriteLeagues()
+    {
+        return $this->belongsToMany(League::class, 'league_user_favourite')->withTimestamps();
+    }
 
 }

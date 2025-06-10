@@ -10,8 +10,8 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Team logo URL:</label>
-                <input type="text" name="logo_url" class="form-control" placeholder="https://example.com/logo.jpg">
+                <label for="logo_url" class="form-label">Logo URL (optional)</label>
+                <input type="url" name="logo_url" class="form-control" value="">
             </div>
             <div class="mb-3">
                 <label class="form-label">City:</label>

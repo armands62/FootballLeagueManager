@@ -36,26 +36,20 @@ class TeamController extends Controller
 
     public function edit(League $league, Team $team)
     {
-        if (!auth()->user()->isOrganizer() && !auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized access.');
-        }
         return view('teams.edit', compact('league', 'team'));
     }
 
     public function update(Request $request, League $league, Team $team)
     {
-        if (!auth()->user()->isOrganizer() && !auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized access.');
-        }
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'city' => 'nullable|string|max:255',
-            'logo_url' => 'nullable|url|max:255',
+            'logo_url' => 'nullable|url',
         ]);
 
-        $team->update($request->only('name', 'city', 'logo_url'));
+        $team->update($validated);
 
-        return redirect()->route('leagues.show', $league)->with('success', 'Team updated.');
+        return redirect()->route('leagues.show', $league)->with('success', 'Team updated successfully.');
     }
 
     public function destroy(League $league, Team $team)

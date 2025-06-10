@@ -19,8 +19,13 @@
         </div>
 
         <div class="mb-3">
+            <label for="country" class="form-label">Country</label>
+            <input type="text" name="country" class="form-control" value="{{ old('country', $league->country ?? '') }}">
+        </div>
+
+        <div class="mb-3">
             <label for="logo_url" class="form-label">Logo URL (optional)</label>
-            <input type="url" name="logo_url" class="form-control" value="{{ $league->logo_url }}">
+            <input type="text" name="logo_url" class="form-control" value="{{ $league->logo_url }}">
         </div>
 
         <div class="mb-3">

@@ -92,6 +92,9 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('leagues.index') }}">Leagues</a></li>
                     @auth
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('favourites.league.index') }}">Favourites</a>
+                        </li>
+                        <li class="nav-item">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="btn btn-link nav-link">Logout</button>

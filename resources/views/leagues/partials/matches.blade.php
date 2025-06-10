@@ -1,7 +1,11 @@
 <h2>Matches</h2>
 
 @auth
-    @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
+    @php
+        $canManageMatches = auth()->user()->isAdmin() || 
+                           (auth()->user()->isOrganizer() && $league->user_id === auth()->id());
+    @endphp
+    @if($canManageMatches)
         <a href="{{ route('matches.create', $league) }}" class="btn btn-primary mb-3">Schedule Match</a>
         <a href="{{ route('matches.schedule.form', $league) }}" class="btn btn-warning mb-3 ms-2">Generate Full Schedule</a>
     @endif
@@ -50,7 +54,7 @@
                 @endif
 
                 @auth
-                    @if(auth()->user()->isOrganizer() || auth()->user()->isAdmin())
+                    @if($canManageMatches)
                         <a href="{{ route('matches.edit', [$league, $match]) }}" class="btn btn-sm btn-warning ms-2">
                             {{ is_null($match->home_score) ? 'Enter Result' : 'Edit Result' }}
                         </a>
@@ -101,7 +105,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 <div class="text-info fw-bold">{{ $event->minute }}'</div>
                                 @auth
-                                    @if(auth()->user()->isAdmin() || auth()->user()->isOrganizer())
+                                    @if($canManageMatches)
                                         <form action="{{ route('match-events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Delete this event?')">
                                             @csrf
                                             @method('DELETE')
